@@ -1,0 +1,13 @@
+﻿@using DotNet.Models
+
+@{
+    ViewData["Title"] = "Articles";
+    var myarticles = ViewData["articles"] as List<Article>;
+}
+
+<h1 >Tuinblog</h1>
+@foreach (var article in myarticles)
+{
+    <li><a href="/articles/detail/@article.Id">@article.Title</a></li>
+}
+    

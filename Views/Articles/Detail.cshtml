@@ -1,0 +1,28 @@
+﻿@using DotNet.Models
+
+@{
+    var article = (Article)ViewData["article"];
+    var comments = ViewData["comments"] as List<Comment>;
+    ViewData["Title"] = "Article detail";
+
+}
+
+    <h1 class="display-4">@article.Title</h1>
+    @Html.Raw(article.Content)
+    
+    
+    <h2>Comments</h2>
+    @if (comments.Count == 0)
+    {
+        <div class="alert alert-info">No comments yet</div>
+    } else {
+        <div class="alert alert-info">@comments.Count comments</div>
+    
+        @foreach (var comment in comments)
+        {
+        <div class="mb-3">@comment.Text
+                <div><em> - @comment.User</em></div>
+        </div>
+        }
+    }
+
