@@ -1,58 +1,49 @@
+using System.Data;
 using MySql.Data.MySqlClient;
 
 namespace DotNet.Models;
 
-public class Article
+public class Article : BaseModel
 {
+
+        private static readonly string connectionString = "Server=localhost;Database=3306;Uid=root;Pwd=secret;Database=gardenblog;";
+
     public int Id { get; set; }
     public string Slug { get; set; }
     public string Title { get; set; }
     public string Content { get; set; }
-    private static string connectionString = "Server=localhost;Database=3306;Uid=root;Pwd=secret;Database=gardenblog;";
 
-   /* private static List<Article> _articles = new List<Article>
+    public static IEnumerable<Article> GetAll()
     {
-        new Article { Id = 1, Title = "Article 1", Content = "This is the content of article 1." },
-        new Article { Id = 2, Title = "Article 2", Content = "This is the content of article 2." },
-        new Article { Id = 3, Title = "Article 3", Content = "This is the content of article 3." }
-    };*/
-
-    public static List<Article> getArticles()
-    {
-        List<Article> articles = new List<Article>();
-
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        string query = "SELECT * FROM Articles";
+        return GetAll(query, (IDataRecord record) =>
         {
-            connection.Open();
-
-            string sql = "SELECT * FROM articles";
-
-            using (MySqlCommand command = new MySqlCommand(sql, connection))
+            return new Article
             {
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        Article article = new Article
-                        {
-                            Id = reader.GetInt32("id"),
-                            Slug = reader.GetString("slug"),
-                            Title = reader.GetString("title"),
-                            Content = reader.GetString("content")
-                        };
-
-                        articles.Add(article);
-                    }
-                }
-            }
-
-            connection.Close();
-        }
-
-        return articles;
+                Id = Convert.ToInt32(record["id"]),
+                Slug = record["slug"].ToString(),
+                Title = record["title"].ToString(),
+                Content = record["content"].ToString()
+            };
+        });
     }
 
-    public static Article getArticleById(int id) {
+
+    public static Article GetById(int id)
+    {
+        string query = "SELECT * FROM articles WHERE id = @id";
+        return GetById(query, id, (IDataRecord record) =>
+        {
+            return new Article
+            {
+                Id = Convert.ToInt32(record["id"]),
+                Slug = record["slug"].ToString(),
+                Title = record["title"].ToString(),
+                Content = record["content"].ToString()
+            };
+        });
+    }
+    /*public static Article getArticleById(int id) {
 
         Article article = new Article();
 
@@ -81,5 +72,5 @@ public class Article
         }
 
         return article;
-    }
+    }*/
 }
